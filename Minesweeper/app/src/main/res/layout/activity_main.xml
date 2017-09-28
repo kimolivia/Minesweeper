@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#c0e0f9"
+    tools:context="hu.ait.android.minesweeper.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="25dp"
+        android:paddingBottom="25dp">
+
+        <hu.ait.android.minesweeper.MinesweeperView
+            android:id="@+id/MinesweeperView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            />
+    </LinearLayout>
+
+    <ToggleButton
+        android:id="@+id/btnToggle"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textOn="@string/flag_mode_on"
+        android:textOff="@string/try_mode_on"
+        android:checked="true" />
+
+</LinearLayout>
