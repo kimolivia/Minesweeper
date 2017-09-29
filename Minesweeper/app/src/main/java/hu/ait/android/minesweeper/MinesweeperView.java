@@ -1,11 +1,13 @@
 package hu.ait.android.minesweeper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -19,6 +21,8 @@ public class MinesweeperView extends View {
     private Paint paintBg;
     private Paint paintLine;
     private Paint paintBomb;
+    private Paint paintInside;
+    private Paint paintNumber;
     private Paint paintFlag;
 
     public MinesweeperView(Context context, @Nullable AttributeSet attrs) {
@@ -35,7 +39,30 @@ public class MinesweeperView extends View {
         paintLine.setStrokeWidth(5);
         paintLine.setStyle(Paint.Style.STROKE);
 
+        paintInside = new Paint();
+        paintInside.setColor(Color.RED);
+        paintLine.setStrokeWidth(5);
+        paintLine.setStyle(Paint.Style.STROKE);
+
+        paintBomb = new Paint();
+        paintBomb.setColor(Color.RED);
+        paintBomb.setStrokeWidth(5);
+        paintBomb.setStyle(Paint.Style.STROKE);
+
+        paintNumber = new Paint();
+        paintNumber.setColor(Color.RED);
+        paintNumber.setStrokeWidth(5);
+        paintNumber.setTextSize(120);
+        paintNumber.setStyle(Paint.Style.STROKE);
+
     }
+
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh){
+        super.onSizeChanged(w,h,oldw,oldh);
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -45,12 +72,10 @@ public class MinesweeperView extends View {
 
         drawGameArea(canvas);
 
-        // drawContents(canvas);
+        drawContents(canvas);
 
     }
 
-    private void drawContents(Canvas canvas) {
-    }
 
     private void drawGameArea(Canvas canvas) {
 
@@ -71,6 +96,78 @@ public class MinesweeperView extends View {
 
     }
 
+
+    private void drawContents(Canvas canvas) {
+        MinesweeperModel field = MinesweeperModel.getInstance();
+        field.fillMatrix();
+        field.setBombLocations();
+        field.setAllBombNumbers();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if(MinesweeperModel.getInstance().getFieldContent(i,j).isMine()){
+                    canvas.drawText("M",
+                            i*getWidth()/5, (j + 1)*getHeight()/5,
+                            paintNumber);
+                } else {
+                    int numOfMines = field.getBombNumber(i, j);
+                    canvas.drawText(String.valueOf(numOfMines),
+                            i * getWidth() / 5, (j + 1) * getHeight() / 5,
+                            paintNumber);
+                }
+
+                /*
+                canvas.drawLine(i * getWidth() / 5 , j * getHeight() / 5,
+                        (i + 1) * getWidth() / 5 ,
+                        (j + 1) * getHeight() / 5 , paintBomb);
+
+                canvas.drawLine((i + 1) * getWidth() / 5 , j * getHeight() / 5 ,
+                        i * getWidth() / 5 , (j + 1) * getHeight() / 5 , paintBomb);
+
+                Log.d("drew text", "?");
+                */
+            }
+                /*
+                if (MinesweeperModel.getInstance().getFieldContent(i,j).isMine()) {
+                    canvas.drawLine(i * getWidth() / 5 , j * getHeight() / 5,
+                            (i + 1) * getWidth() / 5 ,
+                            (j + 1) * getHeight() / 5 , paintBomb);
+
+                    canvas.drawLine((i + 1) * getWidth() / 5 , j * getHeight() / 5 ,
+                            i * getWidth() / 5 , (j + 1) * getHeight() / 5 , paintBomb);
+
+                }
+
+                }
+
+            }
+            */
+        }
+    }
+
+
+
+/*
+    private void drawContents(Canvas canvas) {
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if(MinesweeperModel.getInstance().getFieldContent(i,j).isMine()){
+
+                    canvas.drawLine(i * getWidth() / 5 , j * getHeight() / 5,
+                            (i + 1) * getWidth() / 5 ,
+                            (j + 1) * getHeight() / 5 , paintBomb);
+
+                    canvas.drawLine((i + 1) * getWidth() / 5 , j * getHeight() / 5 ,
+                            i * getWidth() / 5 , (j + 1) * getHeight() / 5 , paintBomb);
+
+                }
+            }
+        }
+    }
+*/
+
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -79,11 +176,19 @@ public class MinesweeperView extends View {
             int tY = ((int) event.getY()) / (getHeight() / 5);
 
 
-
         }
         return true;
     }
 
+    // maybe a set board function?
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int w = MeasureSpec.getSize(widthMeasureSpec);
+        int h = MeasureSpec.getSize(heightMeasureSpec);
+        int d = w == 0 ? h : h == 0 ? w : w < h ? w : h;
+        setMeasuredDimension(d, d);
+    }
 }
+
 

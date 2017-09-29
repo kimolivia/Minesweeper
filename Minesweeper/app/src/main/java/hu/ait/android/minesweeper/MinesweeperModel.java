@@ -1,5 +1,7 @@
 package hu.ait.android.minesweeper;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.*;
@@ -27,7 +29,7 @@ public class MinesweeperModel {
     public static final int FLAG = 1;
     public static final int BOMB = 2;
 
-    private Field[][] model;
+    private Field[][] model = new Field[5][5];
 
     public void fillMatrix(){
         for (int i = 0; i < 5; i++) {
@@ -42,6 +44,10 @@ public class MinesweeperModel {
                 model[i][j] = coordinate;
             }
         }
+    }
+
+    public Field getFieldContent(int i, int j) {
+        return model[i][j];
     }
 
     public ArrayList<Integer> randomIndexGenerator(){
@@ -70,20 +76,18 @@ public class MinesweeperModel {
     }
 
     // checks appropriate surrounding squares to get the total bomb number
-    public void assignNumberOfNearbyMines(int i, int j){
-        int newBombNumber;
-        for (int k = i - 1; k <= i + 1 ; k++) {
-            for (int l = j - 1; l <= j + 1; l++) {
-                // only if not a mine and does not equal the square we are checking
-                if(model[k][l].isMine() && (k != i && l != j)){
-                    // only checks if the indices are within the right bounds
-                    if((0 <= k) && (k <= 4) && (0 <= j) && (j <= 4)){
-                        newBombNumber = model[i][j].getBombNumber() + 1;
-                        model[i][j].setBombNumber(newBombNumber);
+    public void assignNumberOfNearbyMines(int i, int j) {
+        int newBombNumber = 0;
+        for (int k = -1; k < 2; k++) {
+            for (int l = -1; l < 2; l++) {
+                if (i + k >= 0 && i + k < 5 && j + l >= 0 && j + l < 5) {
+                    if (model[i + k][j + l].isMine()) {
+                        newBombNumber++;
                     }
                 }
             }
         }
+        model[i][j].setBombNumber(newBombNumber);
     }
 
     // this method sets bomb numbers after setting bomb locations
@@ -99,6 +103,8 @@ public class MinesweeperModel {
     }
 
 
-
+    public int getBombNumber(int i, int j) {
+        return getFieldContent(i,j).getBombNumber();
+    }
 }
 
