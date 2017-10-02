@@ -16,6 +16,9 @@ public class MinesweeperModel {
 
     // now to disable anyone from the outside to make another instance of the class by making it private
     private MinesweeperModel() {
+        fillMatrix();
+        setBombLocations();
+        setAllBombNumbers();
     }
 
     public static MinesweeperModel getInstance() {
@@ -24,10 +27,6 @@ public class MinesweeperModel {
         }
         return minesweeperModel;
     }
-
-    public static final int EMPTY = 0;
-    public static final int FLAG = 1;
-    public static final int BOMB = 2;
 
     private Field[][] model = new Field[5][5];
 
@@ -94,7 +93,6 @@ public class MinesweeperModel {
     public void setAllBombNumbers(){
         for (int i = 0; i < 5 ; i++) {
             for (int j = 0; j < 5 ; j++) {
-                // only sets bomb number if it is not a bomb itself
                 if(!model[i][j].isMine()){
                     assignNumberOfNearbyMines(i,j);
                 }
@@ -102,9 +100,20 @@ public class MinesweeperModel {
         }
     }
 
-
     public int getBombNumber(int i, int j) {
         return getFieldContent(i,j).getBombNumber();
     }
+
+    public void resetGame() {
+        fillMatrix();
+        setBombLocations();
+        setAllBombNumbers();
+
+    }
+
 }
+
+
+
+
 

@@ -31,12 +31,14 @@
         android:layout_height="wrap_content"
         android:textOn="@string/flag_mode_on"
         android:textOff="@string/try_mode_on"
-        android:checked="true" />
+        android:checked="true"
+        />
 
     <Button
         android:id="@+id/btnReset"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reset"/>
+        android:text="@string/reset"/>
 
 </LinearLayout>
