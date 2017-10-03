@@ -20,13 +20,16 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutContent;
     private int x;
 
+    private MinesweeperView MinesweepView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Button btnReset = (Button) findViewById(R.id.btnReset);
-        final MinesweeperView MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
+        //final MinesweeperView MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
+        MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean isFlagChecked(){
         ToggleButton flagged = (ToggleButton) findViewById(R.id.btnToggle);
         return flagged.isChecked();
+    }
+
+    public void gameOver(){
+        Snackbar.make(MinesweepView, "Game Over", Snackbar.LENGTH_LONG).show();
+
     }
 
 

@@ -12,7 +12,10 @@ import java.util.*;
 
 public class MinesweeperModel {
     //instance of self in own class
+
     private static MinesweeperModel minesweeperModel = null;
+
+    //private int numberOfMinesLeft = 3;
 
     // now to disable anyone from the outside to make another instance of the class by making it private
     private MinesweeperModel() {
@@ -109,6 +112,18 @@ public class MinesweeperModel {
         setBombLocations();
         setAllBombNumbers();
 
+    }
+
+    public boolean isGameOver() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+
+
+            }
+
+        }
+
+        return false;
     }
 
 }
