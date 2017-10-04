@@ -28,8 +28,11 @@ public class MinesweeperView extends View {
     private Paint paintNumber;
     private Paint paintEndBomb;
     private Paint paintFlag;
-    private int numberOfMinesLeft = 3;
+    private Paint paintRevealed;
     private boolean gameOver = false;
+
+    private int numOfMines = 3;
+
 
 
     public MinesweeperView(Context context, @Nullable AttributeSet attrs) {
@@ -55,7 +58,6 @@ public class MinesweeperView extends View {
         paintEndBomb.setStrokeWidth(10);
         paintEndBomb.setTextSize(150);
 
-
         paintFlag = new Paint();
         paintFlag.setColor(Color.YELLOW);
         paintFlag.setStrokeWidth(5);
@@ -68,13 +70,18 @@ public class MinesweeperView extends View {
         paintNumber.setTextSize(110);
         paintNumber.setStyle(Paint.Style.STROKE);
 
+        paintRevealed = new Paint();
+        paintRevealed.setColor(Color.BLUE);
+        paintRevealed.setStrokeWidth(5);
+        paintRevealed.setTextSize(110);
+        paintRevealed.setStyle(Paint.Style.STROKE);
+
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh){
         super.onSizeChanged(w,h,oldw,oldh);
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -92,86 +99,96 @@ public class MinesweeperView extends View {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 int numOfMines = MinesweeperModel.getInstance().getBombNumber(i, j);
-                Log.d("here", "0");
 
-                if (gameOver) {
-                    Log.d("here", "1");
-                    ((MainActivity) getContext()).gameOver();
+                if (!gameOver) {
 
-                }
-                if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
-                    Log.d("here", "2");
-                    if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
-                        Log.d("here", "3");
-
-                        if (!MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-                            Log.d("here", "4");
-                            canvas.drawText("F",
-                                    i * getWidth() / 5, (j + 1) * getHeight() / 5,
-                                    paintBomb);
-                            gameOver = true;
-
-                        } else {
-                            Log.d("here", "5");
-                            canvas.drawText("F",
-                                    i * getWidth() / 5, (j + 1) * getHeight() / 5,
-                                    paintFlag);
-                        }
-                    } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-                        Log.d("here", "6");
-                        canvas.drawText("M", i * getWidth() / 5, (j + 1) * getHeight() / 5, paintEndBomb);
-                        gameOver = true;
+                    if (numOfMines == 0) {
+                        ((MainActivity) getContext()).gameWon();
 
                     } else {
-                        Log.d("here", "7");
-                        canvas.drawText(String.valueOf(numOfMines),
-                                i * getWidth() / 5,
-                                (j + 1) * getHeight() / 5,
-                                paintNumber);
 
+                        if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
+                            // only draws if it has been clicked
+
+                            if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
+
+                                canvas.drawText(
+                                        "F",
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintFlag
+                                );
+
+                            } else {
+                                // this means it's a number. no game over here, a valid move.
+                                canvas.drawText(
+                                        String.valueOf(numOfMines),
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintNumber
+                                );
+                            }
+                        }
+                    }
+
+                    } else{
+                        if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
+                            if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
+                                canvas.drawText(
+                                        "F",
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintFlag
+                                );
+                            } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
+                                canvas.drawText(
+                                        "M",
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintEndBomb
+                                );
+                            } else {
+                                canvas.drawText(
+                                        String.valueOf(numOfMines),
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintNumber
+                                );
+
+                            }
+                        } else {
+
+                            if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
+                                canvas.drawText(
+                                        "F",
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintRevealed
+                                );
+                            } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
+                                canvas.drawText(
+                                        "M",
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintRevealed
+                                );
+                            } else {
+                                canvas.drawText(
+                                        String.valueOf(numOfMines),
+                                        i * getWidth() / 5,
+                                        (j + 1) * getHeight() / 5,
+                                        paintRevealed
+                                );
+
+                            }
+
+                        }
+
+                        ((MainActivity) getContext()).gameOver();
                     }
                 }
             }
         }
-    }
-
-
-
-
-/*
-                if (numberOfMinesLeft != 0 || !gameOver) {
-                    if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
-                        if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
-                            if (!MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-                                gameOver = true;
-                                canvas.drawText("M",
-                                        i * getWidth() / 5, (j + 1) * getHeight() / 5,
-                                        paintFlag);
-                            } else {
-                                canvas.drawText("F",
-                                        i * getWidth() / 5, (j + 1) * getHeight() / 5,
-                                        paintFlag);
-                            }
-
-                        } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-
-                            gameOver = true;
-
-                            canvas.drawText("M", i * getWidth() / 5, (j + 1) * getHeight() / 5, paintBomb);
-
-                        } else {
-                            canvas.drawText(String.valueOf(numOfMines),
-                                    i * getWidth() / 5,
-                                    (j + 1) * getHeight() / 5,
-                                    paintNumber);
-                        }
-                    }
-
-                }
-                */
-
-
-
 
     private void drawGameArea(Canvas canvas) {
 
@@ -199,18 +216,27 @@ public class MinesweeperView extends View {
             int tX = ((int) event.getX()) / (getWidth() / 5);
             int tY = ((int) event.getY()) / (getHeight() / 5);
 
-            if(((MainActivity) getContext()).isFlagChecked() &&
-                    !MinesweeperModel.getInstance().getFieldContent(tX,tY).isAlreadyClicked()) {
-                MinesweeperModel.getInstance().getFieldContent(tX,tY).setFlag(true);
+            if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isAlreadyClicked()){
+
+                if (((MainActivity) getContext()).isFlagChecked()){
+                    MinesweeperModel.getInstance().getFieldContent(tX, tY).setFlag(true);
+                    if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
+                        gameOver = true;
+                } else {
+                        numOfMines--;
+                }
+                } else {
+                    // non flag mode
+                    if (MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
+                        gameOver = true;
+                    }
+                }
+                MinesweeperModel.getInstance().getFieldContent(tX, tY).setIsAlreadyClicked(true);
             }
+                invalidate();
 
-            MinesweeperModel.getInstance().getFieldContent(tX,tY).setIsAlreadyClicked(true);
-
-
-            invalidate();
-
-            return true;
-        }
+                return true;
+            }
         return super.onTouchEvent(event);
 
     }
@@ -221,6 +247,9 @@ public class MinesweeperView extends View {
        gameOver = false;
        invalidate();
    }
+
+   // public void revealWhenGameOver(){}
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

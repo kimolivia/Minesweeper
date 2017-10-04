@@ -63,5 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void gameWon(){
+        Snackbar.make(MinesweepView, "You Won!", Snackbar.LENGTH_LONG).show();
+
+    }
+
 
     }
