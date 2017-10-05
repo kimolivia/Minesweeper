@@ -12,9 +12,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import hu.ait.android.minesweeper.MinesweeperModel;
+import hu.ait.android.minesweeper.data.MinesweeperModel;
 import hu.ait.android.minesweeper.R;
-import hu.ait.android.minesweeper.data.MainActivity;
+import hu.ait.android.minesweeper.MainActivity;
 
 
 /**
