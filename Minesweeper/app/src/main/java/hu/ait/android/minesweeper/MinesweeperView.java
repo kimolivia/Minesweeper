@@ -2,9 +2,11 @@ package hu.ait.android.minesweeper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
@@ -30,16 +32,16 @@ public class MinesweeperView extends View {
     private Paint paintFlag;
     private Paint paintRevealed;
     private boolean gameOver = false;
-
     private int numOfMinesLeft = 3;
 
+   // private Bitmap bmFlag;
 
 
     public MinesweeperView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         paintBg = new Paint();
-        paintBg.setColor(Color.BLACK);
+        paintBg.setColor(Color.DKGRAY);
         paintBg.setStyle(Paint.Style.FILL);
 
         paintLine = new Paint();
@@ -76,6 +78,7 @@ public class MinesweeperView extends View {
         paintRevealed.setTextSize(110);
         paintRevealed.setStyle(Paint.Style.STROKE);
 
+        //bmFlag = BitmapFactory.decodeResource(getResources(), R.drawable.flag);
     }
 
     @Override
@@ -103,7 +106,6 @@ public class MinesweeperView extends View {
                 if (!gameOver) {
 
                         if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
-                            // only draws if it has been clicked
 
                             if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
 
@@ -114,8 +116,9 @@ public class MinesweeperView extends View {
                                         paintFlag
                                 );
 
+
                             } else {
-                                // this means it's a number. no game over here, a valid move.
+
                                 canvas.drawText(
                                         String.valueOf(numOfMines),
                                         i * getWidth() / 5,
@@ -213,26 +216,28 @@ public class MinesweeperView extends View {
             int tX = ((int) event.getX()) / (getWidth() / 5);
             int tY = ((int) event.getY()) / (getHeight() / 5);
 
-            if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isAlreadyClicked()){
+            if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isAlreadyClicked() && !gameOver){
 
                 if (((MainActivity) getContext()).isFlagChecked()){
                     MinesweeperModel.getInstance().getFieldContent(tX, tY).setFlag(true);
                     if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
                         gameOver = true;
+
                 } else {
                         numOfMinesLeft--;
                         if (numOfMinesLeft == 0){
                             gameOver = true;
                         }
-
                 }
                 } else {
-                    // non flag mode
                     if (MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
                         gameOver = true;
+                        MinesweeperModel.getInstance().getFieldContent(tX, tY).setIsAlreadyClicked(true);
                     }
                 }
+
                 MinesweeperModel.getInstance().getFieldContent(tX, tY).setIsAlreadyClicked(true);
+
             }
                 invalidate();
 
@@ -249,7 +254,6 @@ public class MinesweeperView extends View {
        numOfMinesLeft = 3;
        invalidate();
    }
-
 
 
     @Override

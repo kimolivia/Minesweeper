@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,9 +19,9 @@ import android.widget.ToggleButton;
 public class MainActivity extends AppCompatActivity {
 
     private LinearLayout layoutContent;
-    private int x;
-
     private MinesweeperView MinesweepView;
+    private Chronometer timer;
+    private long startTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnReset = (Button) findViewById(R.id.btnReset);
-        //final MinesweeperView MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
         MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
+        timer = (Chronometer) findViewById(R.id.btnTimer);
+        timer.start();
+
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                timer.setBase(SystemClock.elapsedRealtime());
+                startTime = 0;
+                timer.start();
                 MinesweepView.clearBoard();
             }
         });
@@ -48,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     flagged.setChecked(false);
                 }
-                //Snackbar.make(MinesweepView, String.valueOf(flagged.isChecked()), Snackbar.LENGTH_LONG).show();
             }
         });
         }
@@ -59,12 +64,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void gameOver(){
-        Snackbar.make(MinesweepView, "Game Over", Snackbar.LENGTH_LONG).show();
+        timer.stop();
+        Snackbar.make(MinesweepView, R.string.gameOver, Snackbar.LENGTH_LONG).show();
 
     }
 
     public void gameWon(){
-        Snackbar.make(MinesweepView, "You Won!", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(MinesweepView, R.string.gameWon, Snackbar.LENGTH_LONG).show();
 
     }
 

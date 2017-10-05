@@ -3,4 +3,6 @@
     <string name="flag_mode_on">Flag Mode On</string>
     <string name="try_mode_on">Try Mode On</string>
     <string name="reset">Reset</string>
+    <string name="gameOver">Game Over</string>
+    <string name="gameWon">You Won!</string>
 </resources>
