@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingTop="25dp"
-        android:paddingBottom="25dp">
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
         <hu.ait.android.minesweeper.MinesweeperView
             android:id="@+id/MinesweeperView"
@@ -39,7 +39,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reset"/>
+        android:text="@string/reset"
+        android:padding="10dp"/>
 
     <Chronometer
     android:id="@+id/btnTimer"
@@ -48,6 +49,7 @@
     android:layout_gravity="center_horizontal"
     android:textColor="#7b0000"
     android:textSize= "30sp"
+    android:padding="10dp"
     android:drawableLeft="@drawable/clock"
         />
 

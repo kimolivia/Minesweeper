@@ -4,14 +4,12 @@ import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
@@ -28,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnReset = (Button) findViewById(R.id.btnReset);
-        MinesweepView = (MinesweeperView) findViewById(R.id.MinesweeperView);
-        timer = (Chronometer) findViewById(R.id.btnTimer);
+        Button btnReset = findViewById(R.id.btnReset);
+        MinesweepView = findViewById(R.id.MinesweeperView);
+        timer = findViewById(R.id.btnTimer);
         timer.start();
 
         btnReset.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final ToggleButton flagged = (ToggleButton) findViewById(R.id.btnToggle);
+        final ToggleButton flagged = findViewById(R.id.btnToggle);
         flagged.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean flagModeOn) {
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     public boolean isFlagChecked(){
-        ToggleButton flagged = (ToggleButton) findViewById(R.id.btnToggle);
+        ToggleButton flagged = findViewById(R.id.btnToggle);
         return flagged.isChecked();
     }
 
@@ -70,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void gameWon(){
+        timer.stop();
         Snackbar.make(MinesweepView, R.string.gameWon, Snackbar.LENGTH_LONG).show();
 
     }

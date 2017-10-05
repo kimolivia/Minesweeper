@@ -10,12 +10,9 @@ import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
-import hu.ait.android.minesweeper.MinesweeperModel;
 
 /**
  * Created by oliviakim on 9/24/17.
@@ -26,15 +23,16 @@ public class MinesweeperView extends View {
 
     private Paint paintBg;
     private Paint paintLine;
-    private Paint paintBomb;
     private Paint paintNumber;
-    private Paint paintEndBomb;
-    private Paint paintFlag;
+    private Paint paintLosingCoord;
     private Paint paintRevealed;
     private boolean gameOver = false;
     private int numOfMinesLeft = 3;
+    private int gameOverX = -1;
+    private int gameOverY = -1;
 
-   // private Bitmap bmFlag;
+    private Bitmap bmFlag;
+    private Bitmap bmMine;
 
 
     public MinesweeperView(Context context, @Nullable AttributeSet attrs) {
@@ -49,23 +47,6 @@ public class MinesweeperView extends View {
         paintLine.setStrokeWidth(5);
         paintLine.setStyle(Paint.Style.STROKE);
 
-        paintBomb = new Paint();
-        paintBomb.setColor(Color.RED);
-        paintBomb.setStrokeWidth(5);
-        paintBomb.setTextSize(120);
-        paintBomb.setStyle(Paint.Style.STROKE);
-
-        paintEndBomb = new Paint();
-        paintEndBomb.setColor(Color.RED);
-        paintEndBomb.setStrokeWidth(10);
-        paintEndBomb.setTextSize(150);
-
-        paintFlag = new Paint();
-        paintFlag.setColor(Color.YELLOW);
-        paintFlag.setStrokeWidth(5);
-        paintFlag.setTextSize(100);
-        paintFlag.setStyle(Paint.Style.STROKE);
-
         paintNumber = new Paint();
         paintNumber.setColor(Color.GREEN);
         paintNumber.setStrokeWidth(5);
@@ -73,12 +54,18 @@ public class MinesweeperView extends View {
         paintNumber.setStyle(Paint.Style.STROKE);
 
         paintRevealed = new Paint();
-        paintRevealed.setColor(Color.BLUE);
+        paintRevealed.setColor(Color.YELLOW);
         paintRevealed.setStrokeWidth(5);
         paintRevealed.setTextSize(110);
         paintRevealed.setStyle(Paint.Style.STROKE);
 
-        //bmFlag = BitmapFactory.decodeResource(getResources(), R.drawable.flag);
+        paintLosingCoord = new Paint();
+        paintLosingCoord.setColor(Color.LTGRAY);
+        paintLosingCoord.setStrokeWidth(5);
+        paintLosingCoord.setStyle(Paint.Style.STROKE);
+
+        bmFlag = BitmapFactory.decodeResource(getResources(), R.drawable.flag);
+        bmMine = BitmapFactory.decodeResource(getResources(), R.drawable.bomb);
     }
 
     @Override
@@ -102,27 +89,34 @@ public class MinesweeperView extends View {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 int numOfMines = MinesweeperModel.getInstance().getBombNumber(i, j);
+                Rect coordFlag = new Rect(i * getWidth() / 5, j * getHeight() / 5, i * getWidth() / 5 + 110, j * getHeight() / 5 + 110);
+                Rect coordMine = new Rect(i * getWidth() / 5, j * getHeight() / 5, i * getWidth() / 5 + 117, j * getHeight() / 5 + 115);
+
+                if(gameOverX != -1 && gameOverY != -1) {
+                    canvas.drawLine(gameOverX * getWidth() / 5 , gameOverY * getHeight() / 5,
+                            (gameOverX + 1) * getWidth() / 5 ,
+                            (gameOverY + 1) * getHeight() / 5 , paintLosingCoord);
+
+                    canvas.drawLine((gameOverX + 1) * getWidth() / 5 , gameOverY * getHeight() / 5 ,
+                            gameOverX * getWidth() / 5 , (gameOverY + 1) * getHeight() / 5 , paintLosingCoord);
+
+                }
 
                 if (!gameOver) {
 
                         if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
 
+
                             if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
 
-                                canvas.drawText(
-                                        "F",
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
-                                        paintFlag
-                                );
+                                canvas.drawBitmap (bmFlag, null, coordFlag, null );
 
 
                             } else {
-
                                 canvas.drawText(
                                         String.valueOf(numOfMines),
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
+                                        i * getWidth() / 5 + 20,
+                                        (j + 1) * getHeight() / 5 - 20,
                                         paintNumber
                                 );
                             }
@@ -130,25 +124,19 @@ public class MinesweeperView extends View {
 
                     } else{
                         if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
+
                             if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
-                                canvas.drawText(
-                                        "F",
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
-                                        paintFlag
-                                );
+
+                                canvas.drawBitmap (bmFlag, null, coordFlag, null );
+
                             } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-                                canvas.drawText(
-                                        "M",
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
-                                        paintEndBomb
-                                );
+                                canvas.drawBitmap (bmMine, null, coordMine, null );
+
                             } else {
                                 canvas.drawText(
                                         String.valueOf(numOfMines),
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
+                                        i * getWidth() / 5 + 20,
+                                        (j + 1) * getHeight() / 5 -20,
                                         paintNumber
                                 );
 
@@ -156,31 +144,23 @@ public class MinesweeperView extends View {
                         } else {
 
                             if (MinesweeperModel.getInstance().getFieldContent(i, j).isFlag()) {
-                                canvas.drawText(
-                                        "F",
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
-                                        paintRevealed
-                                );
+                                canvas.drawBitmap (bmFlag, null, coordFlag, null);
+
                             } else if (MinesweeperModel.getInstance().getFieldContent(i, j).isMine()) {
-                                canvas.drawText(
-                                        "M",
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
-                                        paintRevealed
-                                );
+
+                                canvas.drawBitmap (bmMine, null, coordMine, null );
+
                             } else {
                                 canvas.drawText(
                                         String.valueOf(numOfMines),
-                                        i * getWidth() / 5,
-                                        (j + 1) * getHeight() / 5,
+                                        i * getWidth() / 5 + 20,
+                                        (j + 1) * getHeight() / 5 - 20,
                                         paintRevealed
                                 );
 
                             }
 
-                        }
-                        if (numOfMinesLeft != 0) {
+                        } if (numOfMinesLeft != 0) {
                             ((MainActivity) getContext()).gameOver();
                         } else {
                             ((MainActivity) getContext()).gameWon();
@@ -194,13 +174,11 @@ public class MinesweeperView extends View {
 
         canvas.drawRect(0,0,getWidth(),getHeight(), paintLine);
 
-        //vertical lines
         canvas.drawLine(getWidth() / 5, 0, getWidth() / 5, getHeight(), paintLine);
         canvas.drawLine(2 * getWidth() / 5, 0, 2 * getWidth() / 5, getHeight(), paintLine);
         canvas.drawLine(3 * getWidth() / 5, 0, 3 * getWidth() / 5, getHeight(), paintLine);
         canvas.drawLine(4 * getWidth() / 5, 0, 4 * getWidth() / 5, getHeight(), paintLine);
 
-        //horizontal lines
         canvas.drawLine(0, getHeight() / 5, getWidth(), getHeight() / 5, paintLine);
         canvas.drawLine(0, 2 * getHeight() / 5, getWidth(), 2 * getHeight() / 5, paintLine);
         canvas.drawLine(0, 3 * getHeight() / 5, getWidth(), 3 * getHeight() / 5, paintLine);
@@ -222,6 +200,8 @@ public class MinesweeperView extends View {
                     MinesweeperModel.getInstance().getFieldContent(tX, tY).setFlag(true);
                     if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
                         gameOver = true;
+                        gameOverX = tX;
+                        gameOverY = tY;
 
                 } else {
                         numOfMinesLeft--;
@@ -232,6 +212,8 @@ public class MinesweeperView extends View {
                 } else {
                     if (MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
                         gameOver = true;
+                        gameOverX = tX;
+                        gameOverY = tY;
                         MinesweeperModel.getInstance().getFieldContent(tX, tY).setIsAlreadyClicked(true);
                     }
                 }
@@ -252,9 +234,10 @@ public class MinesweeperView extends View {
        MinesweeperModel.getInstance().resetGame();
        gameOver = false;
        numOfMinesLeft = 3;
+       gameOverX = -1;
+       gameOverY = -1;
        invalidate();
    }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

@@ -1,27 +1,16 @@
 package hu.ait.android.minesweeper;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.*;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by oliviakim on 9/24/17.
  */
 
 public class MinesweeperModel {
-    //instance of self in own class
 
     private static MinesweeperModel minesweeperModel = null;
 
-
-
-   // private int numberOfMinesLeft = 3;
-
-    // now to disable anyone from the outside to make another instance of the class by making it private
     private MinesweeperModel() {
         fillMatrix();
         setBombLocations();
@@ -81,7 +70,6 @@ public class MinesweeperModel {
         }
     }
 
-    // checks appropriate surrounding squares to get the total bomb number
     public void assignNumberOfNearbyMines(int i, int j) {
         int newBombNumber = 0;
         for (int k = -1; k < 2; k++) {
@@ -96,7 +84,6 @@ public class MinesweeperModel {
         model[i][j].setBombNumber(newBombNumber);
     }
 
-    // this method sets bomb numbers after setting bomb locations
     public void setAllBombNumbers(){
         for (int i = 0; i < 5 ; i++) {
             for (int j = 0; j < 5 ; j++) {
