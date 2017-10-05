@@ -31,7 +31,7 @@ public class MinesweeperView extends View {
     private Paint paintRevealed;
     private boolean gameOver = false;
 
-    private int numOfMines = 3;
+    private int numOfMinesLeft = 3;
 
 
 
@@ -102,11 +102,6 @@ public class MinesweeperView extends View {
 
                 if (!gameOver) {
 
-                    if (numOfMines == 0) {
-                        ((MainActivity) getContext()).gameWon();
-
-                    } else {
-
                         if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
                             // only draws if it has been clicked
 
@@ -129,7 +124,6 @@ public class MinesweeperView extends View {
                                 );
                             }
                         }
-                    }
 
                     } else{
                         if (MinesweeperModel.getInstance().getFieldContent(i, j).isAlreadyClicked()) {
@@ -183,8 +177,11 @@ public class MinesweeperView extends View {
                             }
 
                         }
-
-                        ((MainActivity) getContext()).gameOver();
+                        if (numOfMinesLeft != 0) {
+                            ((MainActivity) getContext()).gameOver();
+                        } else {
+                            ((MainActivity) getContext()).gameWon();
+                        }
                     }
                 }
             }
@@ -223,7 +220,11 @@ public class MinesweeperView extends View {
                     if (!MinesweeperModel.getInstance().getFieldContent(tX, tY).isMine()){
                         gameOver = true;
                 } else {
-                        numOfMines--;
+                        numOfMinesLeft--;
+                        if (numOfMinesLeft == 0){
+                            gameOver = true;
+                        }
+
                 }
                 } else {
                     // non flag mode
@@ -245,10 +246,10 @@ public class MinesweeperView extends View {
    public void clearBoard(){
        MinesweeperModel.getInstance().resetGame();
        gameOver = false;
+       numOfMinesLeft = 3;
        invalidate();
    }
 
-   // public void revealWhenGameOver(){}
 
 
     @Override
