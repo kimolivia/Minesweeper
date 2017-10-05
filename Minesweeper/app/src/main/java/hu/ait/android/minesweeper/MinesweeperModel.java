@@ -3,6 +3,8 @@ package hu.ait.android.minesweeper;
 import java.util.ArrayList;
 import java.util.Random;
 
+import hu.ait.android.minesweeper.data.Field;
+
 /**
  * Created by oliviakim on 9/24/17.
  */

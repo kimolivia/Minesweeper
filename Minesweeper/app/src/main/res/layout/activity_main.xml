@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#e5e8f6"
-    tools:context="hu.ait.android.minesweeper.MainActivity">
+    tools:context="hu.ait.android.minesweeper.data.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp">
 
-        <hu.ait.android.minesweeper.MinesweeperView
+        <hu.ait.android.minesweeper.view.MinesweeperView
             android:id="@+id/MinesweeperView"
             android:layout_width="200dp"
             android:layout_height="200dp"
