@@ -74,10 +74,9 @@ public class MinesweeperModel {
         int newBombNumber = 0;
         for (int k = -1; k < 2; k++) {
             for (int l = -1; l < 2; l++) {
-                if (i + k >= 0 && i + k < 5 && j + l >= 0 && j + l < 5) {
-                    if (model[i + k][j + l].isMine()) {
+                if (i + k >= 0 && i + k < 5 && j + l >= 0 && j + l < 5 &&
+                        model[i + k][j + l].isMine()) {
                         newBombNumber++;
-                    }
                 }
             }
         }
@@ -102,10 +101,7 @@ public class MinesweeperModel {
         fillMatrix();
         setBombLocations();
         setAllBombNumbers();
-
     }
-
-
 }
 
 
